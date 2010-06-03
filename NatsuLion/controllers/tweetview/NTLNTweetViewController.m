@@ -24,7 +24,7 @@
 #define TEXT_FONT_SIZE	16.0
 
 @implementation NTLNURLPair
-@synthesize url, text, screenName, conversation;
+@synthesize url, text, screenName, conversation, hashtag;
 
 - (void)dealloc {
 	[url release];
@@ -214,6 +214,16 @@
 	[[self navigationController] pushViewController:vc animated:YES];
 }
 
+- (void)switchToSearchViewWithSearchString:(NSString*)searchString {
+//	NTLNSearchViewController *vc = [[[NTLNSearchViewController alloc] init] autorelease];
+//	vc.rootMessage = message;
+//	[[self navigationController] pushViewController:vc animated:YES];
+	NTLNBrowserViewController *browser = [[[NTLNBrowserViewController alloc] init] autorelease];
+	browser.url = [NSString stringWithFormat:@"http://search.twitter.com/search?q=%@",[searchString URLEncodedString]];
+	NSLog(browser.url);
+	[[self tabBarController] presentModalViewController:browser animated:YES]; 
+}
+
 - (void)tableView:(UITableView *)tView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	int row = [indexPath row];
 	if (row == 0) {
@@ -231,6 +241,8 @@
 			[self switchToBrowserViewWithURL:pair.url];
 		} else if (pair.conversation) {
 			[self switchToConversationView];
+		} else if (pair.hashtag){
+			[self switchToSearchViewWithSearchString:pair.hashtag];
 		} else {
 			[self switchToUserTimelineViewWithScreenName:message.screenName];
 		}		
@@ -429,12 +441,16 @@
 		[links addObject:pair];
 		[pair release];
 	}
-/*
+
 	a = [text gtm_allSubstringsMatchedByPattern:@"#[^[:space:]]+"];
 	for (NSString *s in a) {
+		NTLNURLPair *pair = [[NTLNURLPair alloc] init];
+		pair.text = s;
+		pair.hashtag = s;
+		[links addObject:pair];
 		NSLog(@"hashtags: %@", s);
 	}
-*/	
+
 }
 
 - (void)twitterClientSucceeded:(NTLNTwitterClient*)sender messages:(NSArray*)messages {

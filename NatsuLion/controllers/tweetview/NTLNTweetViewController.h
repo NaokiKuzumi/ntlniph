@@ -13,10 +13,11 @@
 	NSString *text;
 	NSString *url;
 	NSString *screenName;
+	NSString *hashtag;
 	BOOL conversation;
 }
 
-@property(readwrite, retain) NSString *url, *text, *screenName;
+@property(readwrite, retain) NSString *url, *text, *screenName, *hashtag;
 @property(readwrite) BOOL conversation;
 
 @end
